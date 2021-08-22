@@ -26,7 +26,6 @@ class AuctionList(models.Model):
     seller = ForeignKey(User, on_delete=CASCADE)
     item = ForeignKey(Article, on_delete=CASCADE)
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    end_time = models.DateTimeField()
 
     def __str__(self) -> str:
         return f"{self.id}: {self.item.title} listed by {self.seller}"

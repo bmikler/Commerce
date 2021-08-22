@@ -2,7 +2,7 @@
 
 {% block body %}
     <h2>Create listing</h2>
-
+    {{ message }}
     <form action="{% url 'create_listing' %}" method="POST">
         {% csrf_token %}
 
@@ -20,8 +20,6 @@
         </select>
         <label for="price">Price:</label>
         <input type="number" min="0.01" step="0.01" name="price">
-        <label for="end_date">End date:</label>
-        <input type="date" name="end_date">
 
         <input type="submit" value="Create new auction">
  

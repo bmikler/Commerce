@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import AuctionList, Category, User
+from .models import *
 
 
 def index(request):
@@ -67,7 +67,40 @@ def register(request):
 
 def create_listing(request):
     if request.method == "POST":
-        print(request.POST["title"])
+
+        # create article for auction
+        title = request.POST["title"]
+        description = request.POST["description"]
+        image_url = request.POST["url"]
+        price = request.POST["price"]
+        article_category = Category.objects.get(type=request.POST["category"])
+
+        # if user not provide photo please set defalt photo
+        if not image_url:
+            image_url = "http://www.clker.com/cliparts/B/u/S/l/W/l/no-photo-available-md.png"
+
+        if title and description and price:
+
+            article = Article(
+                title=title, description=description, image_url=image_url, article_category=article_category)
+            article.save()
+
+            # create new auction with this article
+
+            seller = request.user
+            item = Article.objects.get(id=article.id)
+
+            auction = AuctionList(seller=seller, item=item, price=price)
+            auction.save()
+
+            # redirect to main mage
+            return HttpResponseRedirect(reverse("index"))
+
+        else:
+            return render(request, "auctions/create_listing.html", {
+                "message": "Please fill all fields.",
+                "categories": Category.objects.all()
+            })
 
     return render(request, "auctions/create_listing.html", {
         "categories": Category.objects.all()
