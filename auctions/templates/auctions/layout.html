@@ -25,6 +25,9 @@
         </li>
         {% if user.is_authenticated %}
         <li>
+            <a class="nav-link" href="{% url 'categories' %}">Categories</a>
+        </li>
+        <li>
             <a class="nav-link" href="{% url 'create_listing' %}">Create Listing</a>
         </li>
         <li class="nav-item">

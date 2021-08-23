@@ -1,0 +1,30 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Auction Page</h2>
+
+    {{ auction.item.title }}
+
+    <div class="image">
+        <img src="{{ auction.item.image_url }}" alt="No photo">
+    </div>
+
+    {{ auction.item.description }}
+
+    <form action="{% url 'auction_page' page=auction.id %}" method="POST">
+        {% csrf_token %}
+        <div>
+            {{ message }}
+        </div>
+
+        <div>
+            Actual price: {{ auction.price }} $      
+        </div>
+        <div>
+            <label for="bid">Bid: $</label>
+            <input type="number" min="0.01" step="0.01" name="bid">            
+        </div>
+        <input type="submit" value="Bid">
+    </form>
+
+{% endblock %}

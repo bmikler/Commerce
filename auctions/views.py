@@ -82,7 +82,7 @@ def create_listing(request):
         if title and description and price:
 
             article = Article(
-                title=title, description=description, image_url=image_url, article_category=article_category)
+                title=title, description=description, image_url=image_url)
             article.save()
 
             # create new auction with this article
@@ -90,7 +90,8 @@ def create_listing(request):
             seller = request.user
             item = Article.objects.get(id=article.id)
 
-            auction = AuctionList(seller=seller, item=item, price=price)
+            auction = AuctionList(seller=seller, item=item,
+                                  price=price, article_category=article_category)
             auction.save()
 
             # redirect to main mage
@@ -104,4 +105,45 @@ def create_listing(request):
 
     return render(request, "auctions/create_listing.html", {
         "categories": Category.objects.all()
+    })
+
+
+def auction_page(request, page):
+
+    auction = AuctionList.objects.get(id=page)
+    if request.method == "POST":
+
+        # check if bid is higher than actual price
+        if float(request.POST['bid']) > auction.price:
+            bid = Bid(buyer=request.user, auction=auction,
+                      price=float(request.POST['bid']))
+            bid.save()
+
+            AuctionList.objects.filter(id=page).update(price=bid.price)
+
+            message = f"You bid it with price {bid.price}!"
+
+        else:
+
+            message = "Bid must be higher than actual price!"
+
+        return render(request, "auctions/auction_page.html", {
+            "auction": auction,
+            "message": message
+        })
+
+    return render(request, "auctions/auction_page.html", {
+        "auction": auction
+    })
+
+
+def categories(request):
+    return render(request, "auctions/categories.html", {
+        "categories": Category.objects.all()
+    })
+
+
+def categories_listing(request, category):
+    return render(request, "auctions/index.html", {
+        "auctions": AuctionList.objects.filter(article_category=category)
     })
