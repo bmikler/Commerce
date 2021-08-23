@@ -111,15 +111,27 @@ def create_listing(request):
 def auction_page(request, page):
 
     auction = AuctionList.objects.get(id=page)
+    winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
+
+    # check if auction was created by actual user, if yes let him close it
+    if str(auction.seller) == str(request.user.username):
+        edit = True
+    else:
+        edit = None
+
     if request.method == "POST":
 
         # check if bid is higher than actual price
         if float(request.POST['bid']) > auction.price:
+
+            # ad this bid to list of all bids for these auction
             bid = Bid(buyer=request.user, auction=auction,
                       price=float(request.POST['bid']))
             bid.save()
 
+            # udpate price
             AuctionList.objects.filter(id=page).update(price=bid.price)
+            auction = AuctionList.objects.get(id=page)
 
             message = f"You bid it with price {bid.price}!"
 
@@ -127,13 +139,34 @@ def auction_page(request, page):
 
             message = "Bid must be higher than actual price!"
 
+        # return page
         return render(request, "auctions/auction_page.html", {
             "auction": auction,
-            "message": message
+            "message": message,
+            "edit": edit,
+            "winner": winner
+
         })
 
     return render(request, "auctions/auction_page.html", {
-        "auction": auction
+        "auction": auction,
+        "edit": edit,
+        "winner": winner
+    })
+
+
+def delete(request):
+    if request.method == "POST":
+
+        # remove item and auction
+        auction = AuctionList.objects.get(id=request.POST['auction'])
+        item = Article.objects.get(title=auction.item)
+
+        item.delete()
+        auction.delete()
+
+    return render(request, "auctions/index.html", {
+        "auctions": AuctionList.objects.all()
     })
 
 

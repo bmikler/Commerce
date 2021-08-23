@@ -35,7 +35,10 @@ class AuctionList(models.Model):
 class Bid(models.Model):
     buyer = ForeignKey(User, on_delete=CASCADE)
     auction = ForeignKey(AuctionList, on_delete=CASCADE)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def __str__(self) -> str:
+        return f"{self.id}: {self.buyer} - {self.price} - {self.auction}"
 
 class Comment(models.Model):
     author = ForeignKey(User, on_delete=CASCADE)
