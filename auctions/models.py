@@ -2,7 +2,7 @@ from typing import ItemsView
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.deletion import CASCADE, PROTECT
-from django.db.models.fields.related import ForeignKey
+from django.db.models.fields.related import ForeignKey, ManyToManyField
 
 class User(AbstractUser):
     pass
@@ -31,6 +31,10 @@ class AuctionList(models.Model):
 
     def __str__(self) -> str:
         return f"{self.id}: {self.item.title} listed by {self.seller}"
+
+class Watchlist(models.Model):
+    user = ForeignKey(User, on_delete=CASCADE)
+    auction = models.ManyToManyField(AuctionList, blank=True)
 
 class Bid(models.Model):
     buyer = ForeignKey(User, on_delete=CASCADE)

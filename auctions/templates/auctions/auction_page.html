@@ -2,6 +2,20 @@
 
 {% block body %}
 <h2>Auction Page</h2>
+<div>
+    <form action="{% url 'watchlist' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="auction" value="{{ auction.id }}">
+
+        {% if watchlist == True %}
+            <input type="hidden" name="action" value="remove">
+            <input type="submit" value="Remove from watchlist">
+        {% else %}
+            <input type="hidden" name="action" value="add">
+            <input type="submit" value="Add to watchlist">
+        {% endif %}
+    </form>
+</div>
 
 {% if edit %}
 <form action="{% url 'delete' %}" method="POST">
@@ -9,8 +23,9 @@
     <input type="hidden" value="{{ auction.id }}" name="auction">
     <input type="submit" value="Close auction">
 </form>
-
 {% endif %}
+
+<div>Auction created by: {{ auction.seller }}</div>
 
 {{ auction.item.title }}
 

@@ -12,4 +12,5 @@ admin.site.register(Article)
 admin.site.register(AuctionList)
 admin.site.register(Bid)
 admin.site.register(Comment)
+admin.site.register(Watchlist)
 

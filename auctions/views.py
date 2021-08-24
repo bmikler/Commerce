@@ -9,7 +9,8 @@ from .models import *
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "auctions": AuctionList.objects.all()
+        "auctions": AuctionList.objects.all(),
+        "title": "Active Listings"
     })
 
 
@@ -110,8 +111,21 @@ def create_listing(request):
 
 def auction_page(request, page):
 
+    # check if item is on user watchlist
+    user_watchlist = []
+    try:
+        for id in (Watchlist.objects.get(user=request.user.id)).auction.all():
+            user_watchlist.append(id.id)
+
+        if int(page) in user_watchlist:
+            watchlist = True
+        else:
+            watchlist = False
+    except:
+        watchlist = False
+
     auction = AuctionList.objects.get(id=page)
-    winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
+    message = ""
 
     # check if auction was created by actual user, if yes let him close it
     if str(auction.seller) == str(request.user.username):
@@ -138,20 +152,53 @@ def auction_page(request, page):
         else:
 
             message = "Bid must be higher than actual price!"
+            
+    # set the actual winner (higher bid from bids table)
+    winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
 
-        # return page
-        return render(request, "auctions/auction_page.html", {
-            "auction": auction,
-            "message": message,
-            "edit": edit,
-            "winner": winner
-
-        })
-
+    # return page
     return render(request, "auctions/auction_page.html", {
         "auction": auction,
+        "message": message,
         "edit": edit,
-        "winner": winner
+        "winner": winner,
+        "watchlist": watchlist
+
+    })
+
+
+def watchlist(request):
+
+    if request.method == "POST":
+        
+        auction = AuctionList.objects.get(id=request.POST["auction"])
+        action = request.POST["action"]
+
+        # check if user already have watchlist, if not create one
+        try:
+            watchlist = Watchlist.objects.get(user=request.user)
+            
+            if action == "add":
+                watchlist.auction.add(auction)
+            elif action == "remove":
+                watchlist.auction.remove(auction)
+        except:
+            new_watchlist = Watchlist(user=request.user)
+            new_watchlist.save()
+
+            watchlist = Watchlist.objects.get(user=request.user)
+            watchlist.auction.add(auction)
+
+
+    try:
+        watchlist = (Watchlist.objects.get(user=request.user.id))
+        watchlist_auction = watchlist.auction.all()
+    except:
+        watchlist_auction = ""
+
+    return render(request, "auctions/index.html", {
+        "auctions": watchlist_auction,
+        "title": "Watchlist"
     })
 
 
@@ -177,6 +224,11 @@ def categories(request):
 
 
 def categories_listing(request, category):
+
+    # set the page title on category name
+    title = Category.objects.get(id=category)
+
     return render(request, "auctions/index.html", {
-        "auctions": AuctionList.objects.filter(article_category=category)
+        "auctions": AuctionList.objects.filter(article_category=category),
+        "title": title.type
     })
