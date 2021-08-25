@@ -48,3 +48,6 @@ class Comment(models.Model):
     author = ForeignKey(User, on_delete=CASCADE)
     auction_comment = ForeignKey(AuctionList, on_delete=CASCADE)
     text = models.CharField(max_length=128)
+
+    def __str__(self) -> str:
+        return f"{self.author}: {self.auction_comment}"

@@ -2,27 +2,29 @@
 
 {% block body %}
 <h2>Auction Page</h2>
+
+{% if edit %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <input type="hidden" value="{{ auction.id }}" name="auction">
+    <input type="submit" value="Close auction" name="delete">
+</form>
+{% else %}
 <div>
-    <form action="{% url 'watchlist' %}" method="POST">
+    <form action ="" method="POST">
         {% csrf_token %}
         <input type="hidden" name="auction" value="{{ auction.id }}">
 
         {% if watchlist == True %}
             <input type="hidden" name="action" value="remove">
-            <input type="submit" value="Remove from watchlist">
+            <input type="submit" name="watchlist" value="Remove from watchlist">
         {% else %}
             <input type="hidden" name="action" value="add">
-            <input type="submit" value="Add to watchlist">
+            <input type="submit" name="watchlist" value="Add to watchlist">
         {% endif %}
     </form>
 </div>
 
-{% if edit %}
-<form action="{% url 'delete' %}" method="POST">
-    {% csrf_token %}
-    <input type="hidden" value="{{ auction.id }}" name="auction">
-    <input type="submit" value="Close auction">
-</form>
 {% endif %}
 
 <div>Auction created by: {{ auction.seller }}</div>
@@ -35,7 +37,7 @@
 
 {{ auction.item.description }}
 
-<form action="{% url 'auction_page' page=auction.id %}" method="POST">
+<form action="" method="POST">
     {% csrf_token %}
     <div>
         {{ message }}
@@ -46,13 +48,39 @@
     </div>
     <div>
         <label for="bid">Bid: $</label>
-        <input type="number" max="9999999999" min="0.01" step="0.01" name="bid">
+        <input type="number" max="9999999999" min="0.01" step="0.01" name="bid_value">
     </div>
-    <input type="submit" value="Bid">
+    <input type="submit" value="Bid" name="bid">
 </form>
 
+{% if winner %}
 <div>
     Actual winner - {{ winner }}
 </div>
+{% endif %}
+
+<form action="{% url 'comment' %}" method="POST">
+    {% csrf_token %}
+    <div>
+        Add Comment:
+        <input type="hidden" name="auction" value="{{ auction.id }}">
+        <input type="textarea" name="comment">
+        <input type="submit" value="Comment">
+    </div>
+
+    {% if comments %}
+        <div>
+            Comments:
+
+            {% for comment in comments %}
+
+            {{ comment.author }}: {{ comment.text }}
+
+            {% endfor %}
+
+        </div>
+    {% endif %}
+
+</form>
 
 {% endblock %}
