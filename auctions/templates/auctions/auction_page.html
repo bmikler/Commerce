@@ -6,14 +6,12 @@
 {% if edit %}
 <form action="" method="POST">
     {% csrf_token %}
-    <input type="hidden" value="{{ auction.id }}" name="auction">
     <input type="submit" value="Close auction" name="delete">
 </form>
 {% else %}
 <div>
     <form action ="" method="POST">
         {% csrf_token %}
-        <input type="hidden" name="auction" value="{{ auction.id }}">
 
         {% if watchlist == True %}
             <input type="hidden" name="action" value="remove">
@@ -59,13 +57,12 @@
 </div>
 {% endif %}
 
-<form action="{% url 'comment' %}" method="POST">
+<form action="" method="POST">
     {% csrf_token %}
     <div>
         Add Comment:
-        <input type="hidden" name="auction" value="{{ auction.id }}">
-        <input type="textarea" name="comment">
-        <input type="submit" value="Comment">
+        <input type="textarea" name="text">
+        <input type="submit" value="Comment" name="comment">
     </div>
 
     {% if comments %}
