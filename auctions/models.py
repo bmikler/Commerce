@@ -23,10 +23,12 @@ class Article(models.Model):
         return self.title
 
 class AuctionList(models.Model):
-    seller = ForeignKey(User, on_delete=CASCADE)
+    seller = ForeignKey(User, on_delete=CASCADE, related_name="seller")
     item = ForeignKey(Article, on_delete=CASCADE)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     article_category = ForeignKey(Category, on_delete=PROTECT)
+    active = models.BooleanField(default=True)
+    winner = ForeignKey(User, on_delete=PROTECT, blank=True, null=True, related_name="winner")
     
 
     def __str__(self) -> str:

@@ -1,0 +1,32 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>Auction closed</h2>
+
+
+<div>Auction created by: {{ auction.seller }}</div>
+
+{{ auction.item.title }}
+
+<div class="image">
+    <img src="{{ auction.item.image_url }}" alt="No photo">
+</div>
+
+{{ auction.item.description }}
+
+
+{% if auction.winner %}
+<h2><div>
+    Winner - {{ auction.winner }}
+</div>
+{% else %}
+<div>
+    Noone bought it.
+</div>
+</h2>
+{% endif %}
+
+
+
+
+{% endblock %}

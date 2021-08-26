@@ -3,27 +3,28 @@
 {% block body %}
 <h2>Auction Page</h2>
 
-{% if edit %}
-<form action="" method="POST">
-    {% csrf_token %}
-    <input type="submit" value="Close auction" name="delete">
-</form>
-{% else %}
-<div>
-    <form action ="" method="POST">
+
+    {% if edit %}
+    <form action="" method="POST">
         {% csrf_token %}
-
-        {% if watchlist == True %}
-            <input type="hidden" name="action" value="remove">
-            <input type="submit" name="watchlist" value="Remove from watchlist">
-        {% else %}
-            <input type="hidden" name="action" value="add">
-            <input type="submit" name="watchlist" value="Add to watchlist">
-        {% endif %}
+        <input type="submit" value="Close auction" name="delete">
     </form>
-</div>
+    {% else %}
+    <div>
+        <form action ="" method="POST">
+            {% csrf_token %}
 
-{% endif %}
+            {% if watchlist == True %}
+                <input type="hidden" name="action" value="remove">
+                <input type="submit" name="watchlist" value="Remove from watchlist">
+            {% else %}
+                <input type="hidden" name="action" value="add">
+                <input type="submit" name="watchlist" value="Add to watchlist">
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
+
 
 <div>Auction created by: {{ auction.seller }}</div>
 
@@ -51,9 +52,9 @@
     <input type="submit" value="Bid" name="bid">
 </form>
 
-{% if winner %}
+{% if auction.winner %}
 <div>
-    Actual winner - {{ winner }}
+    Actual winner - {{ auction.winner }}
 </div>
 {% endif %}
 

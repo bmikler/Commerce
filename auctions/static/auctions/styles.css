@@ -6,7 +6,7 @@ body {
     border: solid;
     border-color: black;
     margin: 15px;
-    width: 500px;
+    width: 700px;
     margin-left: auto;
     margin-right: auto;
 
@@ -20,4 +20,8 @@ body {
 .image_small img{
     width: 100px;
     height: 100px;
+}
+
+input, label {
+    display:block;
 }

@@ -10,7 +10,8 @@ from .models import *
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "auctions": AuctionList.objects.all(),
+        # print only active auctions
+        "auctions": AuctionList.objects.filter(active=True),
         "title": "Active Listings"
     })
 
@@ -75,13 +76,16 @@ def create_listing(request):
         description = request.POST["description"]
         image_url = request.POST["url"]
         price = request.POST["price"]
-        article_category = Category.objects.get(type=request.POST["category"])
+        try:
+            article_category = Category.objects.get(type=request.POST["category"])
+        except:
+            article_category = None
 
         # if user not provide photo please set defalt photo
         if not image_url:
             image_url = "http://www.clker.com/cliparts/B/u/S/l/W/l/no-photo-available-md.png"
 
-        if title and description and price:
+        if title and description and price and article_category:
 
             article = Article(
                 title=title, description=description, image_url=image_url)
@@ -114,118 +118,131 @@ def auction_page(request, page):
 
     # define auction
     auction = AuctionList.objects.get(id=page)
-    message = ""
 
-    # check if auction was created by actual user, if yes let him close it
-    if str(auction.seller) == str(request.user.username):
-        edit = True
-    else:
-        edit = None
+    if auction.active == True:
 
-    if request.method == "POST":
+        message = ""
 
-        # watchlist button
-        if "watchlist" in request.POST:
-            action = request.POST["action"]
-
-        # check if user already have watchlist, if not create one
-            try:
-                watchlist = Watchlist.objects.get(user=request.user)
-
-                if action == "add":
-                    watchlist.auction.add(auction)
-                elif action == "remove":
-                    watchlist.auction.remove(auction)
-            except:
-                new_watchlist = Watchlist(user=request.user)
-                new_watchlist.save()
-
-                watchlist = Watchlist.objects.get(user=request.user)
-                watchlist.auction.add(auction)
-
-        # bid button
-        if "bid" in request.POST:
-            if request.POST['bid_value']:
-                # check if bid is higher than actual price
-                if float(request.POST['bid_value']) > auction.price:
-
-                    # ad this bid to list of all bids for these auction
-                    bid = Bid(buyer=request.user, auction=auction,
-                              price=float(request.POST['bid_value']))
-                    bid.save()
-
-                    # udpate price
-                    AuctionList.objects.filter(id=page).update(price=bid.price)
-                    auction = AuctionList.objects.get(id=page)
-
-                    message = f"You bid it with price {bid.price}!"
-
-                else:
-
-                    message = "Bid must be higher than actual price!"
-
-        # delete button
-        if "delete" in request.POST:
-            # remove item and auction
-            item = Article.objects.get(title=auction.item)
-
-            item.delete()
-            auction.delete()
-
-            # redirect to start page
-            return HttpResponseRedirect(reverse("index"))
-
-        # comment button
-        if "comment" in request.POST:
-            comment_text = request.POST["text"]
-
-            if comment_text:
-                comment = Comment(author=request.user,
-                                  auction_comment=auction, text=comment_text)
-                comment.save()
-
-    # check if item is on user watchlist
-    user_watchlist = []
-    try:
-        for id in (Watchlist.objects.get(user=request.user.id)).auction.all():
-            user_watchlist.append(id.id)
-
-        if int(page) in user_watchlist:
-            watchlist = True
+        # check if auction was created by actual user, if yes let him close it
+        if str(auction.seller) == str(request.user.username):
+            edit = True
         else:
+            edit = None
+
+        if request.method == "POST":
+
+            # watchlist button
+            if "watchlist" in request.POST:
+                action = request.POST["action"]
+
+            # check if user already have watchlist, if not create one
+                try:
+                    watchlist = Watchlist.objects.get(user=request.user)
+
+                    if action == "add":
+                        watchlist.auction.add(auction)
+                    elif action == "remove":
+                        watchlist.auction.remove(auction)
+                except:
+                    new_watchlist = Watchlist(user=request.user)
+                    new_watchlist.save()
+
+                    watchlist = Watchlist.objects.get(user=request.user)
+                    watchlist.auction.add(auction)
+
+            # bid button
+            if "bid" in request.POST:
+                if request.POST['bid_value']:
+                    # check if bid is higher than actual price
+                    if float(request.POST['bid_value']) > auction.price:
+
+                        # ad this bid to list of all bids for these auction
+                        bid = Bid(buyer=request.user, auction=auction,
+                                price=float(request.POST['bid_value']))
+                        bid.save()
+
+                        # udpate price
+                        AuctionList.objects.filter(id=page).update(price=bid.price)
+                        auction = AuctionList.objects.get(id=page)
+
+                        message = f"You bid it with price {bid.price}!"
+
+                    else:
+
+                        message = "Bid must be higher than actual price!"
+
+            # delete button
+            if "delete" in request.POST:
+                # set status of the auction as inactive
+
+                AuctionList.objects.filter(id=page).update(active=False)
+
+                # set the actual winner (higher bid from bids table)
+                try:
+                    winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
+                    AuctionList.objects.filter(id=page).update(winner=winner)
+                except:
+                    winner = ""
+
+
+                # redirect to start page
+                return HttpResponseRedirect(reverse("index"))
+
+            # comment button
+            if "comment" in request.POST:
+                comment_text = request.POST["text"]
+
+                if comment_text:
+                    comment = Comment(author=request.user,
+                                    auction_comment=auction, text=comment_text)
+                    comment.save()
+
+        # check if item is on user watchlist
+        user_watchlist = []
+        try:
+            for id in (Watchlist.objects.get(user=request.user.id)).auction.all():
+                user_watchlist.append(id.id)
+
+            if int(page) in user_watchlist:
+                watchlist = True
+            else:
+                watchlist = False
+        except:
             watchlist = False
-    except:
-        watchlist = False
 
-    # set the actual winner (higher bid from bids table)
-    try:
-        winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
-    except:
-        winner = ""
+        # set the actual winner (higher bid from bids table)
+        try:
+            winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
+            AuctionList.objects.get(id=page).update(winner=winner)
+        except:
+            winner = None
 
-    # comments for this auction
+        # comments for this auction
 
-    try:
-        comments = Comment.objects.filter(auction_comment=page)
-    except:
-        comments = ""
+        try:
+            comments = Comment.objects.filter(auction_comment=page)
+        except:
+            comments = ""
 
-    # return page
-    return render(request, "auctions/auction_page.html", {
-        "auction": auction,
-        "message": message,
-        "edit": edit,
-        "winner": winner,
-        "watchlist": watchlist,
-        "comments": comments
+        # return page
+        return render(request, "auctions/auction_page.html", {
+            "auction": auction,
+            "message": message,
+            "edit": edit,
+            "watchlist": watchlist,
+            "comments": comments
 
-    })
-
+        })
+    
+    else:
+        return render(request, "auctions/history.html", {
+            "auction": auction
+        })
 
 def watchlist(request):
     try:
         watchlist = (Watchlist.objects.get(user=request.user.id))
-        watchlist_auction = watchlist.auction.all()
+        watchlist_auction = watchlist.auction.filter(active=True)
     except:
         watchlist_auction = ""
 
@@ -249,4 +266,18 @@ def categories_listing(request, category):
     return render(request, "auctions/index.html", {
         "auctions": AuctionList.objects.filter(article_category=category),
         "title": title.type
+    })
+
+def user_panel(request):
+
+    # find all auctions bided by actuall user
+    user_bid = set()
+
+    auctions = Bid.objects.filter(buyer=request.user.id)
+    
+    for auction in auctions:
+        user_bid.add(auction.auction)
+
+    return render(request, "auctions/userpanel.html", {
+        "auctions": user_bid,
     })
