@@ -7,13 +7,11 @@
     {% for auction in auctions %}
     <a href="{% url 'auction_page' page=auction.id %}">
         <div class="auction">
-            <div>
-                <h2>{{ auction.item.title }}</h2>
-            </div>
             <div class="image_small">
                 <img src="{{ auction.item.image_url }}" alt="No photo">
             </div>
-            <div>
+            <div class="auction_info">
+                <h1>{{ auction.item.title }}</h2>
                 <h3>Price: $ {{ auction.price }}</h3>
             </div>
     </div>
