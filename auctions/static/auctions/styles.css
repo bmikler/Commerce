@@ -23,7 +23,7 @@
 }
 
 .auction_page div{
-    padding: 20px;
+    padding: 10px;
 }
 
 
@@ -53,12 +53,12 @@
 
 .image img{
     width: 500px;
-    height: 500px;
+    height: auto;
 }
 
 .image_small img{
-    width: 200px;
-    height: 200px;
+    max-height: 200px;
+    max-width: 200px;
 }
 
 a:hover{

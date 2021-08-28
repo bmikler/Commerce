@@ -211,9 +211,11 @@ def auction_page(request, page):
             watchlist = False
 
         # set the actual winner (higher bid from bids table)
-
-        winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
-        AuctionList.objects.filter(id=page).update(winner=winner)
+        try:
+            winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
+            AuctionList.objects.filter(id=page).update(winner=winner)
+        except:
+            winner=""
 
         # comments for this auction
 
