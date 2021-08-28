@@ -1,71 +1,55 @@
-body {
+
+.auction{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: solid;
+    width: 70%;
+    margin:5px auto;
     padding: 10px;
-    background-color: lightseagreen;
 }
 
-a {
-    text-decoration: none;
-    color: black;
-}
 
-a:hover{
-    color: black;
+.auction div{
+    padding: 20px;
+    margin: auto 0;
 }
 
 .auction_page{
-    width: 70%;
-    border: solid;
-    border-color: black;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 50px;
-    background-color: whitesmoke;
+    display: grid;
+    grid-template-rows: repeat(4, auto);
+    background: lightblue;
+    width: 80%;
+    margin: auto;
 }
 
-.watchlist_button{
-    width: fit-content;
-    margin-left: auto;
-    margin-right: 1%;
-
-}
-
-.auction {
-    border: solid;
-    border-color: black;
-    margin: 15px;
-    width: 70%;
-    margin-left: auto;
-    margin-right: auto;
+.auction_page div{
     padding: 20px;
-    background-color: whitesmoke;
+}
 
+
+.auction_info{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    background: lightgreen;
+    margin: auto;
+}
+
+.auction_text{
+    background: rosybrown;
+    margin:auto;
+}
+
+.comment{
+    background: royalblue;
+    width: fit-content;
+    margin: 5px;
+    border-radius: 10px;
 }
 
 .auction:hover{
-    background-color: lightgray;
+    background: whitesmoke
 }
 
-.auction_info{
-    display: inline-block;
-    max-width: 40%;
-    border: solid;
-    
-}
-
-.auction_info div{
-    margin:20px;
-}
-
-.image{
-    display: inline-block;
-    margin:20px;
-
-}
-
-.image_small{
-    display: inline-block;
-    margin:20px;
-}
 
 .image img{
     width: 500px;
@@ -77,10 +61,65 @@ a:hover{
     height: 200px;
 }
 
-.comments_section{
-    border: solid;
+a:hover{
+    text-decoration: none;
+}
+
+.watchlist_button{
+    text-align: right;
 }
 
 .description{
-    margin:20px
+    padding: 30px;
 }
+
+.create_container{
+    border: solid;
+    width: 80%;
+    margin:20px auto 20px auto;
+    padding: 30px;
+
+}
+
+.create_input div{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    width: 50%;
+    margin:auto;
+    padding: 20px;
+
+}
+
+.create_container input[type=number]{
+    width: fit-content;
+}
+
+.create_submit{    
+    width: fit-content;
+    margin: 30px auto;
+}
+
+textarea {
+    resize: none;
+    height: 200px;
+
+}
+
+.comments_section{
+    border-top: dotted;
+}
+
+.comments_section textarea{
+    width: 600px;
+}
+
+.comment_text{
+    background: chartreuse;
+    width: fit-content;
+    margin: 50px auto;
+}
+
+.comment_text input[type=submit]{
+    text-align: right;
+}
+

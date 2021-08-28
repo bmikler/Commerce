@@ -4,29 +4,36 @@
 <h2>Auction closed</h2>
 
 
-<div>Auction created by: {{ auction.seller }}</div>
+<div class="auction_page">
 
-{{ auction.item.title }}
-
-<div class="image">
-    <img src="{{ auction.item.image_url }}" alt="No photo">
-</div>
-
-{{ auction.item.description }}
-
-
-{% if auction.winner %}
-<h2><div>
-    Winner - {{ auction.winner }}
-</div>
-{% else %}
-<div>
-    Noone bought it.
-</div>
-</h2>
-{% endif %}
+    <div class="auction_info">
+        <div class="image">
+            <img src="{{ auction.item.image_url }}" alt="No photo">
+        </div>
+        <div class="auction_text">
+            <div>
+                <h1>{{ auction.item.title }}</h1>
+            </div>
 
 
+            {% if auction.winner %}
+            <div>
+                <h2>{{ auction.winner }} bought it for {{ auction.price }}</h2>
+            </div>
+            {% else %}
+            <div>
+                <h2>Nobody bought it</h2>
+            </div>
+            {% endif %}
 
+            
+        </div>
+    </div>
+
+               
+    <div class="description">
+        <h4>Descreption: </h4>
+        {{ auction.item.description }}
+    </div>
 
 {% endblock %}

@@ -27,42 +27,44 @@
         {% endif %}
     </div>
 
-
-    <div class="image">
-        <img src="{{ auction.item.image_url }}" alt="No photo">
-    </div>
-    <dvi class="auction_info">
-        <div>
-            <h1>{{ auction.item.title }}</h1>
+    <div class="auction_info">
+        <div class="image">
+            <img src="{{ auction.item.image_url }}" alt="No photo">
         </div>
-
-        <div>Auction created by: <b>{{ auction.seller }}</b></div>
-
-        <form action="" method="POST">
-            {% csrf_token %}
+        <div class="auction_text">
+            <div>
+                <h1>{{ auction.item.title }}</h1>
+            </div>
 
             <div>
-                <h2>Actual price: {{ auction.price }} $</h2>
+                Auction created by: <b>{{ auction.seller }}</b>
             </div>
+
+            <form action="" method="POST">
+                {% csrf_token %}
+
+                <div>
+                    <h2>Actual price: {{ auction.price }} $</h2>
+                </div>
+                <div>
+                    <input type="number" max="9999999999" min="0.01" step="0.01" name="bid_value">
+                    <input class="btn btn-success" type="submit" value="Bid" name="bid">
+                </div>
+            </form>
+
+            {% if auction.winner %}
             <div>
-                <input type="number" max="9999999999" min="0.01" step="0.01" name="bid_value">
-                <input class="btn btn-success" type="submit" value="Bid" name="bid">
+                <h6>Actual winner - {{ auction.winner }}</h6>
             </div>
-        </form>
+            {% endif %}
 
-        {% if auction.winner %}
-        <div>
-            Actual winner - {{ auction.winner }}
-        </div>
-        {% endif %}
-
-        {% if message %}
+            {% if message %}
             <div class="alert alert-primary">
                 {{ message }}
             </div>
-        {% endif %}
-
-    </dvi>
+            {% endif %}
+        </div>
+    </div>
 
     <div class="description">
         <h4>Descreption: </h4>
@@ -70,27 +72,32 @@
     </div>
 
     <div class="comments_section">
-        <form action="" method="POST">
-            {% csrf_token %}
-            <div>
-                Add Comment:
-                <input type="textarea" name="text">
-                <input type="submit" value="Comment" name="comment">
-            </div>
-
+            Comments:
             {% if comments %}
-            <div>
-                Comments:
 
                 {% for comment in comments %}
-
+                <div class="comment">
                 {{ comment.author }}: {{ comment.text }}
-
+                </div>
                 {% endfor %}
 
+            {% else %}
+            <div>
+                No comments yet
             </div>
             {% endif %}
-        </form>
+
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="comment_text">
+                    <p>Add comment:</p>
+                    <textarea name="text"></textarea>
+                    <div class="watchlist_button">
+                        <input type="submit" value="Comment" name="comment">
+                    </div>
+                </div>
+
+            </form>
     </div>
 
 </div>

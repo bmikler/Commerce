@@ -2,24 +2,25 @@
 
 {% block body %}
     <h2>{{ title }}</h2>
+    <div class="auction_conteiner">
+        {% if auctions %}
+        {% for auction in auctions %}
+        <a href="{% url 'auction_page' page=auction.id %}">
+            <div class="auction">
+                <div class="image_small">
+                    <img src="{{ auction.item.image_url }}" alt="No photo">
+                </div>
+                <div>
+                    <h1>{{ auction.item.title }}</h2>
+                    <h3>Price: $ {{ auction.price }}</h3>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
 
-    {% if auctions %}
-    {% for auction in auctions %}
-    <a href="{% url 'auction_page' page=auction.id %}">
-        <div class="auction">
-            <div class="image_small">
-                <img src="{{ auction.item.image_url }}" alt="No photo">
-            </div>
-            <div class="auction_info">
-                <h1>{{ auction.item.title }}</h2>
-                <h3>Price: $ {{ auction.price }}</h3>
-            </div>
+        {% else %}
+            <div>No auctions</div>
+        {% endif %}
     </div>
-    </a>
-    {% endfor %}
-
-    {% else %}
-        <div>No auctions</div>
-    {% endif %}
 
 {% endblock %}

@@ -1,42 +1,62 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>{{ title }}</h2>
 
-    
+<h2>{{ title }}</h2>
+<div class="auction_conteiner"></div>
     {% if auctions %}
     {% for auction in auctions %}
     <a href="{% url 'auction_page' page=auction.id %}">
         <div class="auction">
-            <div>
-                <h2>{{ auction.item.title }}</h2>
-            </div>
             <div class="image_small">
                 <img src="{{ auction.item.image_url }}" alt="No photo">
             </div>
             <div>
-                <h3>Actuall price: $ {{ auction.price }}</h3>
+                <h1>{{ auction.item.title }}</h2>
+                <h3>Price: $ {{ auction.price }}</h3>
             </div>
-            <div>
-                {% if auction.active == True %}
-                Auction active
-                {% else %}
-                Auction closed
-                {% endif %}
-            </div>
-            <div>
-                {% if auction.winner %}
-                Winner: {{ auction.winner }}
-                {% else %}
-                None bid it.
-                {% endif %}
-            </div>
-    </div>
+            
+            {% if auction.active == True %}
+                <div>
+                    <h5>Auction status:</h5> <h5 style="color: green;">active</span></h5>
+                    
+                </div>
+
+                <div>
+                    <h5>Actual winner:</h5>
+                    <h5>
+                        {% if auction.winner == request.user %}                   
+                        <span style="color: green;">You are winning!</span>
+                        {% else %}
+                        <span style="color: red">{{ auction.winner }}</span>
+                        {% endif %}
+                    </h5>
+                </div>
+            {% else %}
+                <div>
+                    <h5>Auction status:</h5> <h5 style="color: red;">Closed</span></h5>
+                </div>
+                <div>
+                    <h5>Winner:</h5>
+                    <h5>
+                        {% if auction.winner == request.user %}                   
+                        <span style="color: green;">You won it!</span>
+                        {% else %}
+                        <span style="color: red">{{ auction.winner }}</span>
+                        {% endif %}
+                    </h5>
+                </div>
+
+            {% endif %}
+
+
+        </div>
     </a>
     {% endfor %}
 
     {% else %}
         <div>No auctions</div>
     {% endif %}
+</div>
 
 {% endblock %}

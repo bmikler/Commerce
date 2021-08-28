@@ -1,39 +1,50 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+
+<form action="{% url 'create_listing' %}" method="POST">
+    {% csrf_token %}
     <h2>Create listing</h2>
-    {{ message }}
-    <form action="{% url 'create_listing' %}" method="POST">
-        {% csrf_token %}
 
-        <div>
-            <label for="title">Title:</label>
-            <input type="text" name="title">
-        </div>
-        <div>
-            <label for="description">Description:</label>
-            <textarea placeholder="description..." name="description"></textarea>
-        </div>
-        <div>
-            <label for="url">Image url:</label>
-            <input tpye="url" placeholder="https//www.image.jpg" name="url">
-        </div>
-        <div>
-            <label for="category">Category:</label>
-            <select name="category">
-            <option value="" selected disabled hidden>Chose category</option>
-            {% for category in categories %}
-            <option value="{{ category }}">{{ category }}</option>
-            {% endfor %}
-            </select>
-        </div>
-        <div>
-            <label for="price">Price:</label>
-            <input type="number" min="0.01" step="0.01" name="price">
-        </div>
+    <div class="create_container">
+        <div class="create_input">
+            {% if message %}
+            <div class="alert alert-primary">
+                {{ message }}
+            </div>
+            {% endif %}
+                <div>
+                    <label for="title">Title:</label>
+                    <input type="text" name="title">
+                </div>
+                <div>
+                    <label for="description">Description:</label>
+                    <textarea name="description"></textarea>
+                </div>
+                <div>
+                    <label for="url">Image url:</label>
+                    <input tpye="url" name="url">
+                </div>
+                <div>
+                    <label for="category">Category:</label>
+                    <select name="category">
+                    <option value="" selected disabled hidden>Chose category</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="price">Price:</label>
+                    <input type="number" min="0.01" step="0.01" name="price">
+                </div>
+            </div>
+            <div class="create_submit">
+                <input type="submit" value="Create new auction"> 
+            </div>
 
-        <input type="submit" value="Create new auction">
- 
-    </form>
+    </div>
+
+</form>
 
 {% endblock %}
