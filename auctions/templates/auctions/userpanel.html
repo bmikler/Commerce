@@ -3,6 +3,7 @@
 {% block body %}
     <h2>{{ title }}</h2>
 
+    
     {% if auctions %}
     {% for auction in auctions %}
     <a href="{% url 'auction_page' page=auction.id %}">
@@ -27,7 +28,7 @@
                 {% if auction.winner %}
                 Winner: {{ auction.winner }}
                 {% else %}
-                Noone bid it.
+                None bid it.
                 {% endif %}
             </div>
     </div>

@@ -6,23 +6,40 @@
 <div class="auction_page">
 
 
+    <div class="watchlist_button">
+        {% if edit %}
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input class="btn btn-danger" type="submit" value="Close auction" name="delete">
+        </form>
+        {% else %}
+        <form action="" method="POST">
+            {% csrf_token %}
+
+            {% if watchlist == True %}
+            <input type="hidden" name="action" value="remove">
+            <input class="btn btn-danger" type="submit" name="watchlist" value="Remove from watchlist">
+            {% else %}
+            <input type="hidden" name="action" value="add">
+            <input class="btn btn-dark" type="submit" name="watchlist" value="Add to watchlist">
+            {% endif %}
+        </form>
+        {% endif %}
+    </div>
 
 
     <div class="image">
         <img src="{{ auction.item.image_url }}" alt="No photo">
     </div>
     <dvi class="auction_info">
-        <h1>{{ auction.item.title }}</h1>
+        <div>
+            <h1>{{ auction.item.title }}</h1>
+        </div>
 
-        {{ auction.item.description }}
-
-        <div>Auction created by: {{ auction.seller }}</div>
+        <div>Auction created by: <b>{{ auction.seller }}</b></div>
 
         <form action="" method="POST">
             {% csrf_token %}
-            <div>
-                {{ message }}
-            </div>
 
             <div>
                 <h2>Actual price: {{ auction.price }} $</h2>
@@ -39,49 +56,42 @@
         </div>
         {% endif %}
 
+        {% if message %}
+            <div class="alert alert-primary">
+                {{ message }}
+            </div>
+        {% endif %}
+
     </dvi>
 
-    {% if edit %}
-    <form action="" method="POST">
-        {% csrf_token %}
-        <input class="btn btn-danger" type="submit" value="Close auction" name="delete">
-    </form>
-    {% else %}
-    <form action="" method="POST">
-        {% csrf_token %}
+    <div class="description">
+        <h4>Descreption: </h4>
+        {{ auction.item.description }}
+    </div>
 
-        {% if watchlist == True %}
-        <input type="hidden" name="action" value="remove">
-        <input class="btn btn-danger" type="submit" name="watchlist" value="Remove from watchlist">
-        {% else %}
-        <input type="hidden" name="action" value="add">
-        <input class="btn btn-dark" type="submit" name="watchlist" value="Add to watchlist">
-        {% endif %}
-    </form>
-    {% endif %}
+    <div class="comments_section">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div>
+                Add Comment:
+                <input type="textarea" name="text">
+                <input type="submit" value="Comment" name="comment">
+            </div>
 
-    <form action="" method="POST">
-        {% csrf_token %}
-        <div>
-            Add Comment:
-            <input type="textarea" name="text">
-            <input type="submit" value="Comment" name="comment">
-        </div>
+            {% if comments %}
+            <div>
+                Comments:
 
-        {% if comments %}
-        <div>
-            Comments:
+                {% for comment in comments %}
 
-            {% for comment in comments %}
+                {{ comment.author }}: {{ comment.text }}
 
-            {{ comment.author }}: {{ comment.text }}
+                {% endfor %}
 
-            {% endfor %}
-
-        </div>
-        {% endif %}
-
-    </form>
+            </div>
+            {% endif %}
+        </form>
+    </div>
 
 </div>
 

@@ -1,5 +1,6 @@
 body {
     padding: 10px;
+    background-color: lightseagreen;
 }
 
 a {
@@ -17,9 +18,16 @@ a:hover{
     border-color: black;
     margin-left: auto;
     margin-right: auto;
-    padding: 20px;
+    padding: 50px;
+    background-color: whitesmoke;
 }
 
+.watchlist_button{
+    width: fit-content;
+    margin-left: auto;
+    margin-right: 1%;
+
+}
 
 .auction {
     border: solid;
@@ -29,6 +37,7 @@ a:hover{
     margin-left: auto;
     margin-right: auto;
     padding: 20px;
+    background-color: whitesmoke;
 
 }
 
@@ -38,8 +47,13 @@ a:hover{
 
 .auction_info{
     display: inline-block;
-    margin:20px;
     max-width: 40%;
+    border: solid;
+    
+}
+
+.auction_info div{
+    margin:20px;
 }
 
 .image{
@@ -63,6 +77,10 @@ a:hover{
     height: 200px;
 }
 
-.w-d_button{
-    position: absolute;
+.comments_section{
+    border: solid;
+}
+
+.description{
+    margin:20px
 }
