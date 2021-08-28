@@ -1,25 +1,28 @@
 
 .auction{
+    color: black;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     border: solid;
-    width: 70%;
+    width: 50%;
     margin:5px auto;
     padding: 10px;
+    background:lightsteelblue;
 }
 
 
 .auction div{
     padding: 20px;
-    margin: auto 0;
-}
+    margin: auto;
 
+}
 .auction_page{
+    padding: 50px;
     display: grid;
     grid-template-rows: repeat(4, auto);
-    background: lightblue;
     width: 80%;
     margin: auto;
+    background: lightsteelblue;
 }
 
 .auction_page div{
@@ -30,30 +33,28 @@
 .auction_info{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    background: lightgreen;
     margin: auto;
 }
 
 .auction_text{
-    background: rosybrown;
     margin:auto;
 }
 
 .comment{
-    background: royalblue;
+    background: lightskyblue;
     width: fit-content;
     margin: 5px;
     border-radius: 10px;
 }
 
 .auction:hover{
-    background: whitesmoke
+    background: lightgray;
 }
 
 
 .image img{
-    width: 500px;
-    height: auto;
+    max-height: 500px;
+    max-width: 500px;
 }
 
 .image_small img{
@@ -114,9 +115,8 @@ textarea {
 }
 
 .comment_text{
-    background: chartreuse;
     width: fit-content;
-    margin: 50px auto;
+    margin: auto;
 }
 
 .comment_text input[type=submit]{

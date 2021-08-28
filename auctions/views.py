@@ -264,7 +264,7 @@ def categories_listing(request, category):
     title = Category.objects.get(id=category)
 
     return render(request, "auctions/index.html", {
-        "auctions": AuctionList.objects.filter(article_category=category),
+        "auctions": AuctionList.objects.filter(article_category=category, active=True),
         "title": title.type
     })
 

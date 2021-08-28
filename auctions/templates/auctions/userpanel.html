@@ -12,7 +12,7 @@
                 <img src="{{ auction.item.image_url }}" alt="No photo">
             </div>
             <div>
-                <h1>{{ auction.item.title }}</h2>
+                <h3>{{ auction.item.title }}</h3>
                 <h3>Price: $ {{ auction.price }}</h3>
             </div>
             
@@ -20,9 +20,6 @@
                 <div>
                     <h5>Auction status:</h5> <h5 style="color: green;">active</span></h5>
                     
-                </div>
-
-                <div>
                     <h5>Actual winner:</h5>
                     <h5>
                         {% if auction.winner == request.user %}                   
@@ -35,8 +32,6 @@
             {% else %}
                 <div>
                     <h5>Auction status:</h5> <h5 style="color: red;">Closed</span></h5>
-                </div>
-                <div>
                     <h5>Winner:</h5>
                     <h5>
                         {% if auction.winner == request.user %}                   
