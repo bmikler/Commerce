@@ -77,7 +77,8 @@ def create_listing(request):
         image_url = request.POST["url"]
         price = request.POST["price"]
         try:
-            article_category = Category.objects.get(type=request.POST["category"])
+            article_category = Category.objects.get(
+                type=request.POST["category"])
         except:
             article_category = None
 
@@ -158,11 +159,20 @@ def auction_page(request, page):
 
                         # ad this bid to list of all bids for these auction
                         bid = Bid(buyer=request.user, auction=auction,
-                                price=float(request.POST['bid_value']))
+                                  price=float(request.POST['bid_value']))
                         bid.save()
 
                         # udpate price
-                        AuctionList.objects.filter(id=page).update(price=bid.price)
+                        AuctionList.objects.filter(
+                            id=page).update(price=bid.price)
+
+                        # update winner
+                        winner = Bid.objects.filter(
+                            auction=page).order_by('-price')[0].buyer
+                        AuctionList.objects.filter(
+                            id=page).update(winner=winner)
+
+                        # udpate auction
                         auction = AuctionList.objects.get(id=page)
 
                         message = f"You bid it with price {bid.price}!"
@@ -179,11 +189,11 @@ def auction_page(request, page):
 
                 # set the actual winner (higher bid from bids table)
                 try:
-                    winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
+                    winner = Bid.objects.filter(
+                        auction=page).order_by('-price')[0].buyer
                     AuctionList.objects.filter(id=page).update(winner=winner)
                 except:
                     winner = ""
-
 
                 # redirect to start page
                 return HttpResponseRedirect(reverse("index"))
@@ -194,7 +204,7 @@ def auction_page(request, page):
 
                 if comment_text:
                     comment = Comment(author=request.user,
-                                    auction_comment=auction, text=comment_text)
+                                      auction_comment=auction, text=comment_text)
                     comment.save()
 
         # check if item is on user watchlist
@@ -212,10 +222,11 @@ def auction_page(request, page):
 
         # set the actual winner (higher bid from bids table)
         try:
-            winner = Bid.objects.filter(auction=page).order_by('-price')[0].buyer
+            winner = Bid.objects.filter(
+                auction=page).order_by('-price')[0].buyer
             AuctionList.objects.filter(id=page).update(winner=winner)
         except:
-            winner=""
+            winner = ""
 
         # comments for this auction
 
@@ -233,11 +244,12 @@ def auction_page(request, page):
             "comments": comments
 
         })
-    
+
     else:
         return render(request, "auctions/history.html", {
             "auction": auction
         })
+
 
 def watchlist(request):
     try:
@@ -268,13 +280,14 @@ def categories_listing(request, category):
         "title": title.type
     })
 
+
 def user_panel(request):
 
     # find all auctions bided by actuall user
     user_bid = set()
 
     auctions = Bid.objects.filter(buyer=request.user.id)
-    
+
     for auction in auctions:
         user_bid.add(auction.auction)
 
