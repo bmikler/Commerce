@@ -288,6 +288,8 @@ def user_panel(request):
 
     auctions = Bid.objects.filter(buyer=request.user.id)
 
+    
+
     for auction in auctions:
         user_bid.add(auction.auction)
 
